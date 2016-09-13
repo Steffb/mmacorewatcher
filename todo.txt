@@ -1,0 +1,13 @@
+
+This site is a problem:
+
+get_original_videolink_from_page('http://www.mma-core.com/videos/CM_Punk_vs_Mickey_Gall_UFC_203_Full_Fight_Part_1/10139284')
+returns another link that does not work.
+Returns> Found url as: 	sources: [{  http://cdn-e2.streamable.com/video/mp4/67s3.mp4 }
+Should return : /bvid/Sapo/10079/7bd60af0-1ebe-49a9-a2c0-be8ceca74664/v.mp4
+
+Element to traverse:
+<script type="text/javascript">jwplayer('mmaplayer').setup({'width': '100%','aspectratio': '16:10', 'preload': 'auto', 'abouttext': 'DMCA', 'aboutlink': 'http://www.mma-core.com/dmca', playlist: [{ image: '/img/v/l/10139284.jpg', sources: [{ 'file': 'http://cdn-e2.streamable.com/video/mp4/67s3.mp4' }, { 'file': '/bvid/VidMe/10043/7bd60af0-1ebe-49a9-a2c0-be8ceca74664/v.mp4' }, { 'file': '/bvid/Sapo/10079/7bd60af0-1ebe-49a9-a2c0-be8ceca74664/v.mp4' }]}], events: { onError: function(error) { var player = jwplayer('mmaplayer'); player.load({ file: player.getPlaylistItem()['sources'][player.getCurrentQuality() + 1].file, image: player.getPlaylistItem().image }); } }, cast: { appid: 'chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID' }, sharing: { link: 'http://www.mma-core.com/videos/CM_Punk_vs_Mickey_Gall_UFC_203_Full_Fight_Part_1/10139284', sites: ['facebook', 'twitter', 'reddit', 'tumblr', 'googleplus', 'linkedin', 'email'] }, related: { file: '/vid/10139284/rel.json', onclick: 'link' }, advertising: { client: 'googima', tag: 'http://googleads.g.doubleclick.net/pagead/ads?ad_type=video_text_image_flash&client=ca-video-pub-5755576192768698&description_url=http%3a%2f%2fwww.mma-core.com%2fv%2f10139284&channel=9315429398+7233911790&videoad_start_delay=0&hl=en' } });</script>
+
+Original link:
+http://www.mma-core.com/videos/CM_Punk_vs_Mickey_Gall_UFC_203_Full_Fight_Part_1/10139284
