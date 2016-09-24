@@ -135,9 +135,10 @@ def get_videos_from_frontpage(localpath, local = False):
 
         if all(x in a.string.lower() for x in [' vs','ufc']):
 
-
-            urldict[a.string] = 'http://mma-core.com'+a['href']
-
+            if('mma-core.com' not in a['href']):
+                urldict[a.string] = 'http://mma-core.com'+a['href']
+            else:
+                urldict[a.string] = a['href']
     #pprint(urldict)
     return urldict
 
@@ -191,43 +192,83 @@ def traverse_videos(urlDict):
     return sorted(collected_urls_list)
 
 
+# Takes in a sorted list if full fight urls and return a dict with Name= {url1, url2 ...}
+def select_fight_function(list):
+    #list = pickle.load(open('urllist.p','r'))
+    fight_dict = {}
+    for url in list:
+        fight =url.split('/')[4]
+
+        match = re.match('^[^_]*_[^_]*_[^_]*_[^_]*_[^_]*',fight)
+        fight_name =  match.group(0)
+
+        if(fight_name in fight_dict):
+            fight_dict[fight_name].append(url)
+
+        else:
+            fight_dict[fight_name]= [url]
+    return fight_dict
+    #pprint(fight_dict)
 
 
-#traverse_videos('http://www.mma-core.com/videos/Cezar_Ferreira_vs_Anthony_Smith_TUF_23_Finale_Part_1/10133739')
+## TEST FUNCTIONS
+    #traverse_videos('http://www.mma-core.com/videos/Cezar_Ferreira_vs_Anthony_Smith_TUF_23_Finale_Part_1/10133739')
 
-#print 'http://mma-core.com'+get_original_videolink_from_page(test_url)
+    #print 'http://mma-core.com'+get_original_videolink_from_page(test_url)
 
-#buttons = get_nxt_links(test_url)
-
-
-#print getContentFromLocal('/Users/steffenfb/programming/mma-core-trending.htm')
-
-#print get_original_videolink_from_page('/Users/steffenfb/programming/mma-core-trending.htm', local=True)
+    #buttons = get_nxt_links(test_url)
 
 
+    #print getContentFromLocal('/Users/steffenfb/programming/mma-core-trending.htm')
+
+    #print get_original_videolink_from_page('/Users/steffenfb/programming/mma-core-trending.htm', local=True)
+
+def run_on_local(path):
+    dict = get_videos_from_frontpage(path, local=True)
+    list = traverse_videos(dict)
+    pprint(list)
+    pickle.dump(list,open('urllist.p','wb'))
+    fight_dict = select_fight_function(list)
+    #TODO: continue
+    while(True):
+        pprint(fight_dict.keys())
+        selected_fight = raw_input('Type fight to see')
+
+        urllist = fight_dict[selected_fight]
+        for url in urllist:
+            try:
+                raw_video_url = get_original_videolink_from_page(url)
+                webbrowser.open_new_tab('http://mma-core.com'+raw_video_url)
+                raw_input('Press enter for next video')
+            except:
+                print 'Error when loading url'
+
+def run_on_mmacore():
+
+    #TO FETCH ALL VIDEOLINKS: ----------
+
+    #dict = get_videos_from_frontpage('/Users/steffenfb/programming/mma-core-trending.htm', local=True)
+    dict = get_videos_from_frontpage('', local=False)
+
+    list = traverse_videos(dict)
+    pickle.dump(list,open('urllist.p','wb'))
+
+
+    #list = pickle.load(open('urllist.p','rb'))
+    pprint(list)
+
+
+    for url in list:
+        raw_input('press key to start next video')
+        try:
+            raw_video_url = get_original_videolink_from_page(url)
+            webbrowser.open_new_tab('http://mma-core.com'+raw_video_url)
+        except:
+            print 'Error when loading url'
 
 
 
-#TO FETCH ALL VIDEOLINKS:
-
-#dict = get_videos_from_frontpage('/Users/steffenfb/programming/mma-core-trending.htm', local=True)
-dict = get_videos_from_frontpage('', local=False)
-
-list = traverse_videos(dict)
-pickle.dump(list,open('urllist.p','wb'))
 
 
-#list = pickle.load(open('urllist.p','rb'))
-pprint( list)
-
-print list
-for url in list:
-    raw_input('press key to start next video')
-    try:
-        raw_video_url = get_original_videolink_from_page(url)
-        webbrowser.open_new_tab('http://mma-core.com'+raw_video_url)
-    except:
-     print 'Error when loading url'
-
-
+run_on_local('/Users/steffenfb/programming/mma-core-videos.htm')
 
